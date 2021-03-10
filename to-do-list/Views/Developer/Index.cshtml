@@ -1,0 +1,161 @@
+﻿@model IEnumerable<Suggestion>
+@{ Layout = "_Layout";}
+
+
+<p class="home-page-title">Feedback Home</p>
+
+<div>
+    <span data-bind="if: pageNumber() <= 1">
+        <span class="fas fa-caret-left disabled"></span>
+    </span>
+
+    <span data-bind="if: pageNumber() > 1">
+        <a href="#">  <span data-bind="click: loadPreviousPage, clickBubble: false" class="fas fa-caret-left"></span></a>
+    </span>
+
+    <span data-bind="text:'Showing page ' + pageNumber() + ' of ' + maxPage()"></span>
+
+    <span data-bind="if: pageNumber() < maxPage()">
+        <a href="#"> <span data-bind="click: loadNextPage, clickBubble: false" class="fas fa-caret-right"></span></a>
+    </span>
+
+    <span data-bind="if: pageNumber() == maxPage()">
+        <span class="fas fa-caret-right disabled"></span>
+    </span>
+
+</div>
+
+<table data-bind="visible: dataLoaded" style="display:none;" class="table table-striped">
+    <thead>
+        <tr>
+            <th style="width:15%;">Post Date</th>
+            <th style="width:15%;">
+                <span id="userHeader">User <i class="fas fa-search"></i></span>
+                <div id="userSearchContainer" class="search-container">
+                    <input id="userSearchBar" class="search-bar" onkeyup="filterUsers(this)" data-bind="event:{keyup:watchEnterKey}" placeholder="Search by user..." />
+                    <a id="closeUserSearch" class="close-search-button" href="#">x</a>
+                </div>
+            </th>
+            <th>
+                <span id="detailsHeader">Feedback <i class="fas fa-search"></i></span>
+                <div id="detailsSearchContainer" class="search-container">
+                    <input id="detailsSearchBar" class="search-bar" onkeyup="filterDetails(this)" data-bind="event:{keyup:watchEnterKey}" placeholder="Search by keyword..." />
+                    <a id="closeDetailsSearch" class="close-search-button" href="#">x</a>
+                </div>
+            </th>
+        </tr>
+    </thead>
+    <tbody data-bind="foreach: feedback">
+        <tr>
+            <td data-bind="text: formatDateddMMyyyy(postDate)"></td>
+            <td name="user" data-bind="text: user"></td>
+            <td name="details"><a data-bind="attr:{href:'Developer/View?suggestionId='+suggestionId},text:details"></a></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    function filterUsers(input) {
+        $("detailsSearchBar").val("");
+        feedbackVM.pageNumber(1);
+        feedbackVM.userSearchValue($(input).val().toLowerCase());
+        feedbackVM.load();
+    }
+    function filterDetails(input) {
+        $("userSearchBar").val("");
+        feedbackVM.pageNumber(1);
+        feedbackVM.detailsSearchValue($(input).val().toLowerCase());
+        feedbackVM.load();
+    }
+
+    function hideUserSearchBar() {
+        $("#userSearchContainer").css("display", "none");
+        $("#userHeader").css("display", "inline");
+        $("#userSearchBar").val('');
+        feedbackVM.userSearchValue('');
+        feedbackVM.pageNumber(1);
+        feedbackVM.load();
+    }
+
+    function hideDetailsSearchBar() {
+        $("#detailsSearchContainer").css("display", "none");
+        $("#detailsHeader").css("display", "inline");
+        $("#detailsSearchBar").val('');
+        feedbackVM.detailsSearchValue('');
+        feedbackVM.pageNumber(1);
+        feedbackVM.load();
+    }
+
+    var feedbackVM = {
+        dataLoaded: ko.observable(),
+        feedback: ko.observableArray(),
+        pageNumber: ko.observable(),
+        maxPage: ko.observable(),
+        userSearchValue: ko.observable(''),
+        detailsSearchValue: ko.observable(''),
+
+        watchEnterKey: function (data, event) {
+            if (event.which == 13) data.load();
+        },
+
+        loadPreviousPage: function () {
+            feedbackVM.pageNumber(feedbackVM.pageNumber() - 1);
+            feedbackVM.load();
+        },
+
+        loadNextPage: function () {
+            feedbackVM.pageNumber(feedbackVM.pageNumber() + 1);
+            feedbackVM.load();
+        },
+
+        load: function () {
+            return $.ajax({
+                url: window.location.origin
+                    + '/api/Developer?pageNumber=' + feedbackVM.pageNumber() + '&userSearchValue=' + feedbackVM.userSearchValue() + '&detailsSearchValue=' + feedbackVM.detailsSearchValue(),
+                type: 'get',
+                success: function (result) {
+                    feedbackVM.feedback(result.feedback);
+                    feedbackVM.dataLoaded(true);
+                    feedbackVM.maxPage(result.maxPage);
+                    feedbackVM.pageNumber(result.pageNumber);
+                }
+            });
+        }
+    }
+
+    $(document).ready(function () {
+        $("#userHeader").click(function () {
+            $(this).css("display", "none");
+            $("#userSearchContainer").css("display", "inline");
+            document.getElementById("userSearchBar").focus();
+            hideDetailsSearchBar();
+        });
+        $("#detailsHeader").click(function () {
+            $(this).css("display", "none");
+            $("#detailsSearchContainer").css("display", "inline");
+            document.getElementById("detailsSearchBar").focus();
+            hideUserSearchBar();
+        });
+
+        $("#closeUserSearch").click(function () {
+            hideUserSearchBar();
+        });
+
+        $("#closeDetailsSearch").click(function () {
+            hideDetailsSearchBar();
+        });
+
+        return $.ajax({
+            url: window.location.origin + '/api/Developer',
+            type: 'get',
+            success: function (result) {
+                feedbackVM.feedback(result.feedback);
+                feedbackVM.dataLoaded(true);
+                feedbackVM.maxPage(result.maxPage);
+                feedbackVM.pageNumber(result.pageNumber);
+
+                ko.applyBindings(feedbackVM, $('body')[0]);
+            }
+        });
+    });
+</script>

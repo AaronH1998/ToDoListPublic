@@ -1,0 +1,52 @@
+﻿@model CreateModel
+@{ Layout = "_NoBreadcrumbLayout";}
+
+<link rel="stylesheet" href="~/css/validation.css" />
+
+<p class="page-title">Register</p>
+
+<div asp-validation-summary="All" class="text-danger"></div>
+<form id="registerForm" asp-action="Register" method="post">
+    <div id="username" class="form-group">
+        <label asp-for="Name">Username</label>
+        <input id="nameInput" asp-for="Name" class="form-control" required />
+
+        <ul class="input-requirements">
+            <li>Usernames can only contain letters, numbers and spaces. </li>
+        </ul>
+    </div>
+    <div id="email" class="form-group">
+        <label asp-for="Email"></label>
+        <input id="emailInput" type="email" asp-for="Email" class="form-control" required />
+
+        <ul class="input-requirements">
+            <li>Email must be a valid email address.</li>
+        </ul>
+    </div>
+    <div id="password" class="form-group">
+        <label asp-for="Password"></label>
+        <input id="passwordInput" asp-for="Password" class="form-control" required />
+
+        <ul class="input-requirements">
+            <li>Passwords must be at least 6 characters.</li>
+            <li>Passwords must have at least one non alphanumeric character (e.g. ! % $).</li>
+            <li>Passwords must have at least one digit ('0'-'9').</li>
+            <li>Passwords must have at least one uppercase ('A'-'Z').</li>
+            <li>Passwords must have at least one lowercase ('a'-'z')</li>
+        </ul>
+    </div>
+    <div id="passwordRepeat" class="form-group">
+        <label name="repeatPassword">Repeat Password</label>
+        <input type="password" id="passwordRepeatInput" class="form-control" />
+
+        <ul class="input-requirements">
+            <li>Passwords must match.</li>
+        </ul>
+    </div>
+    <div style="float:right">
+        <button type="submit" class="btn btn-black">Register</button>
+        <a asp-controller="Home" asp-action="Index">Cancel</a>
+    </div>
+</form>
+
+<script src="~/js/customValidation.js?v=1.0"></script>

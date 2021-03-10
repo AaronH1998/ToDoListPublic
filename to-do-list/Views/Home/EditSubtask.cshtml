@@ -1,0 +1,49 @@
+﻿@model SubTask
+
+@{ Layout = "_Layout";}
+
+<script>
+    $(function () {
+        if ('@Model.Name' == '') {
+            $(".page-title").html("New Subtask");
+            $("#statusGroup").css("display", "none");
+            $("#statusInput").val("Active");
+        }
+    });
+</script>
+
+<p class="page-title">@Model.Name</p>
+
+<form class="m-1 p-1" onload="displayDeadline();" asp-action="EditSubTask" method="post">
+    <input type="hidden" asp-for="SubTaskID" />
+    <input type="hidden" asp-for="TaskModelTaskID" />
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <div><span asp-validation-for="Name" class="text-danger"></span></div>
+        <input asp-for="Name" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Description"></label>
+        <textarea style="height:75px;" asp-for="Description" class="form-control"></textarea>
+    </div>
+
+    <div id="statusGroup" class="form-group">
+        <label asp-for="Status"></label>
+        <div><span asp-validation-for="Status" class="text-danger"></span></div>
+        <select onchange="checkTaskStatus()" id="statusInput" class="form-control" asp-for="Status" asp-items="@new SelectList(Enum.GetNames(typeof(Statuses)))">
+            <option disabled selected value="">Select Status of Task</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TaskComments">Comments</label>
+        <textarea style="height:75px;" asp-for="TaskComments" class="form-control"></textarea>
+    </div>
+
+    <div style="float:right">
+        <button type="submit" class="btn btn-black">Save Task</button>
+        <a asp-action="Edit" asp-route-taskid="@Model.TaskModelTaskID">Cancel</a>
+    </div>
+</form>

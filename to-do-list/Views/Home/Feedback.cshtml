@@ -1,0 +1,33 @@
+﻿@model Suggestion
+@{ Layout = "_NoBreadcrumbLayout";}
+
+
+
+<p class="page-title">@ViewBag.Title</p>
+
+<form class="m-1 p-1" asp-action="Feedback" method="post">
+    <div class="form-group">
+        <label asp-for="Details">Your Feedback</label>
+        <div><span asp-validation-for="Details" class="text-danger"></span></div>
+        <textarea id="feedbackInput" style="height:300px;" asp-for="Details" class="form-control"></textarea>
+    </div>
+
+    <button type="submit" onclick="feedbackResponse()" class="btn btn-black" style="float:right">Submit Feedback</button>
+</form>
+
+<script>
+    function feedbackResponse() {
+        if (!$("#feedbackInput").val()) {
+            alert("Please enter Feedback");
+        } else {
+            alert("Thank you for your feedback");
+        }
+    }
+    $(function () {
+        if ('@ViewBag.User' == "Developer") {
+            $("#developerHomeButton").css("display", "inline");
+        } else {
+            $("#developerHomeButton").css("display", "none");
+        }
+    });
+</script>

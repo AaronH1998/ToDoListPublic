@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Project>
+@{ Layout = "HomeLayout";}
+
+
+<div id="projectPage">
+    <p class="home-page-title" data-bind="text: title"></p>
+
+    <table data-bind="visible: dataLoaded" style="display:none;" class="table table-striped">
+        <tbody data-bind="foreach:projects">
+            <tr>
+                <td><a data-bind="attr:{href:'./Tasks?projectId='+projectId},text:name"></a></td>
+                <td data-bind="visible: !projectVM.isClosed()" class="text-right">
+                    <a data-bind="click:$parent.closeProject.bind($data,projectId)" href="#">
+                        <i title="Close Project" class="fas fa-archive"></i>
+                    </a>
+                </td>
+                <td data-bind="visible: projectVM.isClosed()" class="text-right">
+                    <a data-bind="click:$parent.openProject.bind($data,projectId)" href="#">
+                        <i title="Open Project" class="fas fa-door-open"></i>
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td style="text-align:right;">
+                    <a type="button" title="Add Project" class="btn btn-black" style="float:right;" data-toggle="modal" data-target="#createProjectModal" href="#">
+                        <i class="fas fa-plus"></i> Add
+                    </a>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div id="createProjectModal" object="Project" type="Create" onCompletion="createProject" class="react-modal modal fade" tabIndex="-1" role="dialog" aria-labelledby="headerLabel" aria-hidden="true"></div>
+
+<script>
+
+    var projectVM = {
+        dataLoaded: ko.observable(),
+        projects: ko.observableArray(),
+        isClosed: ko.observable(),
+        title: ko.observable(''),
+
+        load: function () {
+            return $.ajax({
+                url: window.location.origin + '/api/Project?isClosed=' + projectVM.isClosed(),
+                type: "get",
+                success: function (result) {
+                    if (projectVM.isClosed()) {
+                        projectVM.title('Closed Projects');
+                    } else {
+                        projectVM.title('Projects');
+                    }
+                    projectVM.projects(result);
+                    projectVM.dataLoaded(true);
+                }
+            });
+        },
+        changeProjectList: function (isClosed) {
+            projectVM.isClosed(isClosed);
+            projectVM.load();
+        },
+        closeProject: function (projectId) {
+            var confirmation = confirm("Are you sure you want to close this project");
+
+            if (confirmation) {
+                projectVM.isClosed(true);
+                $.ajax({
+                    url: window.location.origin + '/api/Project/Close/' + projectId,
+                    type: "put",
+                    success: function () {
+                        projectVM.load();
+                    }
+                });
+            }
+        },
+        openProject: function (projectId) {
+            var confirmation = confirm("Are you sure you want to open this project");
+
+            if (confirmation) {
+                projectVM.isClosed(false);
+                $.ajax({
+                    url: window.location.origin + '/api/Project/Open/' + projectId,
+                    type: "put",
+                    success: function () {
+                        projectVM.load();
+                    }
+                });
+            }
+        }
+
+    };
+
+
+    $(function () {
+        createProject = function (projectName) {
+            $.ajax({
+                url: window.location.origin + '/api/Project?projectName=' + projectName,
+                type: "post",
+                success: function () {
+                    $("#createProjectModal").css("display", "none");
+                    projectVM.load();
+                }
+            });
+        }
+
+        return $.ajax({
+            url: window.location.origin + '/api/Project?isClosed=false',
+            type: "get",
+            success: function (result) {
+                if (projectVM.isClosed()) {
+                    projectVM.title('Closed Projects');
+                } else {
+                    projectVM.title('Projects');
+                }
+
+                projectVM.projects(result);
+                projectVM.dataLoaded(true);
+                projectVM.isClosed(false);
+
+                ko.applyBindings(projectVM, $('#bodyUnderBreadcrumb')[0]);
+            }
+        });
+    });
+</script>

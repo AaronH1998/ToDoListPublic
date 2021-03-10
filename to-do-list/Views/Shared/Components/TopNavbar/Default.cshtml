@@ -1,0 +1,60 @@
+﻿<div id="navbar" class="navbar navbar-inverse bg-inverse" style="overflow:visible;" role="navigation">
+    <div class="row">
+        <a class="col-2 navbar-brand" asp-controller="Home" asp-action="Index">To-Do Lists</a>
+        <div class="navbar-toggler-right">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Feedback"><i class="fas fa-smile"></i></a>
+
+            <div class="dropdownDiv">
+                <button class="navbar-brand dropbtn"><i class="far fa-user"></i></button>
+                <div class="dropdown-list right">
+                    @if (ViewBag.ProjectID != null)
+                    {
+                        <a class="dropdownItem" data-toggle="modal" data-target="#sendInviteModal" href="#">Invite User To Project</a>
+                    }
+                    <a class="dropdownItem" id="developerHome" asp-controller="Developer" asp-action="Index">Developer Home</a>
+                    <a class="dropdownItem" asp-controller="Account" asp-action="Logout">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="sendInviteModal" tabindex="-1" role="dialog" aria-labelledby="inviteLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inviteLabel">Send Invite</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="close">
+                    <span aria-hidden="true">x</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label name="Email">Email:</label>
+                <input style="display:inline" id="emailInput" type="email" />
+                <button style="display:inline;float:right;" onclick="sendInvite()" type="button" class="btn btn-black">Send Invite</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        if ('@ViewBag.User' == "Developer") {
+            $("#developerHome").css("display", "block");
+        } else {
+            $("#developerHome").css("display", "none");
+        }
+
+        sendInvite = function () {
+            var userEmail = $("#emailInput").val();
+            if (userEmail != "") {
+                $.ajax({
+                    url: "/Home/SendInvite",
+                    dataType: "application/json",
+                    data: { userEmail: userEmail }
+                });
+            }
+            $("#emailInput").val("");
+        };
+    });
+</script>

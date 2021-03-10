@@ -1,0 +1,151 @@
+﻿@model IEnumerable<TaskModel>
+@{ Layout = "HomeLayout";}
+
+<p class="home-page-title" data-bind="text: tasksVM.listType()"></p>
+
+<table id="CurrentToDoList" class="table table-striped">
+    <tbody data-bind="foreach: tasks" id="sortable">
+        <tr class="drop" data-bind="attr:{id:taskId}">
+            <td style="width:10%" class="index" data-bind="if:status !='Closed'"><span data-bind="text:priority"></span></td>
+            <td><a data-bind="attr:{href:'./Edit?taskid='+taskId}, text:taskName"></a></td>
+            <td class="not-mobile text-center" data-bind="text:'Status: '+status">
+            </td>
+            <td data-bind="if:deadline" class="deadline-td large-screen-only text-center">
+                <span data-bind="text:'Deadline: '+ formatDateddMMyyyy(deadline)"></span>
+            </td>
+            <td data-bind="if:tasksVM.listType()!='Completed'" class="complete-td text-right">
+                <a data-bind="click: $parent.completeTask.bind($data,taskId)" class="btn btn-sm" href="#"><i class="fas fa-check"></i></a>
+            </td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td class="not-mobile"></td>
+            <td class="deadline-td large-screen-only"></td>
+            <td style="text-align:right">
+                <span data-bind="if:tasksVM.listType()!='Completed'">
+                    <a title="Add Task" class="btn btn-black" data-bind="attr:{href:'./Create?projectId=' + tasksVM.projectId() + '&fromAction=' + tasksVM.listType()}"><i class="fas fa-plus"></i> Add</a>
+                </span>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<script>
+    var tasksVM = {
+        dataLoaded: ko.observable(),
+        tasks: ko.observableArray(),
+        listType: ko.observable(''),
+        projectId: ko.observable(),
+        projectUsers: ko.observableArray(),
+        projectOwner: ko.observable(''),
+
+        load: function () {
+            return $.ajax({
+                url: window.location.origin + '/api/Tasks/' + tasksVM.projectId() + '?listType=' + tasksVM.listType(),
+                type: "get",
+                success: function (result) {
+                    tasksVM.tasks(result.tasks);
+                    tasksVM.projectUsers(result.projectUsers);
+                    tasksVM.projectOwner(result.projectOwner);
+                    var deadlines = [];
+                    for (var task of result.tasks) {
+                        if (task.deadline != null) {
+                            deadlines.push(task.deadline);
+                        }
+                    }
+                    if (deadlines == 0) {
+                        $(".deadline-td").each(function () {
+                            $(this).css("display", "none");
+                        });
+                    } else {
+                        $(".deadline-td").each(function () {
+                            $(this).css("display", "");
+                        });
+                    }
+                    if (result.listType == 'Completed') {
+                        $(".complete-td").each(function () {
+                            $(this).css("width", "0");
+                        });
+                    } else {
+                        $(".complete-td").each(function () {
+                            $(this).css("width", "");
+                        });
+                    }
+                    tasksVM.dataLoaded(true);
+
+                }
+            });
+        },
+
+        changeList: function (list) {
+            tasksVM.listType(list);
+            tasksVM.load();
+        },
+
+        completeTask: function (taskId) {
+            if (confirmation()) {
+                $.ajax({
+                    url: window.location.origin + '/api/Tasks/Complete/' + taskId,
+                    type: "put",
+                    success: function () {
+                        tasksVM.load();
+                    }
+                });
+            }
+        }
+
+    }
+
+    $(function () {
+        var url = new URLSearchParams(window.location.search);
+        var projectId = url.get("projectId") || null;
+        var listType = url.get("listType") || "Next";
+
+        return $.ajax({
+            url: window.location.origin + '/api/Tasks/' + projectId + '?listType=' + listType,
+            type: "get",
+            success: function (result) {
+                tasksVM.tasks(result.tasks);
+                tasksVM.projectUsers(result.projectUsers);
+                tasksVM.projectOwner(result.projectOwner);
+
+                var deadlines = [];
+                for (var task of result.tasks) {
+                    if (task.deadline != null) {
+                        deadlines.push(task.deadline);
+                    }
+                }
+                if (deadlines == 0) {
+                    $(".deadline-td").each(function () {
+                        $(this).css("display", "none");
+                    });
+                }
+                else {
+                    $(".deadline-td").each(function () {
+                        $(this).css("display", "");
+                    });
+                }
+                if (result.listType == 'Completed') {
+                    $(".complete-td").each(function () {
+                        $(this).css("width", "0");
+                    });
+                } else {
+                    $(".complete-td").each(function () {
+                        $(this).css("width", "");
+                    });
+                }
+                tasksVM.dataLoaded(true);
+                tasksVM.listType(result.listType);
+                tasksVM.projectId(projectId);
+
+                $("#projectHeader").css("display", "");
+                $("#projectUsers").css("display", "");
+
+                ko.applyBindings(tasksVM, $('body')[0]);
+            }
+        });
+    });
+</script>

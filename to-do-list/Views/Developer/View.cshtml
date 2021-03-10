@@ -1,0 +1,17 @@
+﻿@model Suggestion
+
+@{ Layout = "_Layout";}
+
+
+<p id="pageTitle" class="page-title">@Model.User - @Model.PostDate</p>
+
+<div id="suggestionView" class="mt-3">
+    <div class="form-group">
+        <label>Feedback:</label>
+        <div class="mt-1 dont-break-out">@Model.Details</div>
+    </div>
+</div>
+
+<div style="margin-bottom:5px; float:right;">
+    <a asp-action="Index">Back</a>
+</div>

@@ -1,0 +1,393 @@
+﻿@import "../lib/toastr/2.1.1/content/content/toastr.css";
+html {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    background-color: #66666E;
+    color: #E8E9EB;
+    height: calc(100% - 68px);
+    font-size: 1rem;
+}
+
+.search-container {
+    width:100%;
+    display: none;
+    position:relative;
+}
+
+.search-bar{
+    width:100%;
+}
+
+.close-search-button, .close-search-button:hover{
+    position: absolute;
+    right: 3px;
+    text-decoration: none;
+}
+
+.dont-break-out {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-word;
+}
+
+#navbar {
+    top: 0;
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+.validationMessage{
+    color:red;
+}
+.nav-menu-title {
+    font-size: 34px;
+    margin: 0;
+}
+
+.home-page-title {
+    font-size: 34px;
+    height: 60px;
+    padding:8px 8px 8px 8px;
+    margin: 0;
+}
+
+.page-title {
+    font-size: 34px;
+    height: 60px;
+    padding: 8px 8px 8px 0px;
+    margin: 0;
+}
+
+.btn:focus {
+    outline: 0;
+    box-shadow: none;
+}
+
+hr {
+    margin: 0;
+    border-top: 1.5px solid #E6E6E9;
+}
+
+nav{
+    width:100%;
+}
+
+.breadcrumb {
+    background-color: #66666E;
+    color: #F4F4F6;
+    width:100%;
+    margin-bottom:0;
+    border-radius:0;
+}
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        color: #F4F4F6;
+        font-weight:normal;
+    }
+
+.modal-content {
+    background-color: #66666E;
+}
+
+.hidden-td{
+    display:none;
+}
+
+.ui-sortable-helper {
+    display: table;
+}
+
+.table {
+    table-layout: fixed;
+}
+
+tbody{
+    width:100%;
+}
+
+tr{
+    width:100%;
+}
+
+td {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.complete-td{
+    width:15%;
+}
+
+@media (max-width: 768px) {
+    .large-screen-only {
+        display: none;
+    }
+    .complete-td{
+        width:25%;
+    }
+    .ui-sortable-placeholder td:nth-child(2){
+        display:none;
+    }
+}
+@media(max-width: 500px){
+    .not-mobile{
+        display:none;
+    }
+    .complete-td{
+        width:32%;
+    }
+    .ui-sortable-placeholder td:nth-child(3) {
+        display: none;
+    }
+}
+
+.row{
+    width:100%;
+}
+
+.clickable-row:hover{
+    cursor:pointer;
+}
+
+a {
+    color: #FFF07C;
+    font-size:1rem;
+}
+    a:hover, a:focus {
+        color: white;
+    }
+
+.btn-collapse-menu {
+    background: none;
+    border: 0;
+    color: #FFF07C;
+}
+
+.btn-black {
+    background-color: #2A2B2D;
+    border: 0;
+    padding:13px 20px 13px 20px;
+    color: #FFF07C;
+}
+    .btn-black:hover {
+        background-color: #FFF07C;
+        color: #2A2B2D;
+    }
+
+.btn{
+    border-radius:0;
+    font-size:0.9rem;
+}
+
+.bodyUnderNavbar {
+    margin-top: 68px;
+    width: 100%;
+    height: 100%;
+}
+
+.bodyUnderBreadcrumb {
+    height: calc(100% - 51px);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas:'menu main';
+    margin: 0;
+}
+
+.content{
+    grid-area: main;
+    transition:width 0.5s;
+}
+
+.navMenu {
+    grid-area: menu;
+    height: 100%;
+    border-right: 1.5px solid #E6E6E9;
+    transition: width 0.5s;
+}
+    #navCategories a {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        text-align:  center;
+    }
+        #navCategories a:hover, #navCategories a:focus, #navCategories a.hovered {
+            background-color: #595960;
+            border-right: 3px solid #FFF07C;
+            color: #E8E9EB;
+        }
+        #navCategories a:hover, #navCategories a.hovered {
+            border-left: 3px solid #FFF07C;
+        }
+
+.open-menu .navMenu{
+    width:200px;
+}
+
+.open-menu .navMenu, .open-menu #closeNavButton {
+    display: inline;
+}
+.open-menu #openNavButton {
+    display: none;
+}
+
+.closed-menu .navMenu {
+    width: 20px;
+}
+
+.closed-menu .menu-main, .closed-menu #closeNavButton {
+    display: none;
+}
+.closed-menu #openNavButton {
+    display: inline;
+}
+
+input {
+    background-color: #595960;
+    outline: 0 none;
+    border: 0 none;
+    color: white;
+}
+
+.form-control,.form-control:focus {
+    background-color:#595960;
+    color:white;
+}
+    .form-control:focus, input:focus, textarea:focus {
+        border-color: #E8E9EB;
+        outline: 0 none;
+    }
+
+.dropdownDiv {
+    float: right;
+    overflow: hidden;
+}
+
+.dropdown-list {
+    display: none;
+    min-width: 160px;
+    background-color: inherit;
+    position: absolute;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index:99;
+    max-height:1000px;
+    width:100%;
+}
+
+.close, .close:hover {
+    color: #FFF07C;
+}
+.close{
+    opacity:.75;
+}
+.close:hover{
+    opacity:1;
+}
+
+/* Navbar container */
+.navbar {
+    overflow: visible;
+    background-color: #333;
+    font-family: Arial;
+    border-top: 3px solid #FFF07C;
+}
+
+.navbar-brand {
+    display: inline-block;
+    padding-top: .25rem;
+    padding-bottom: .25rem;
+    font-size: 1.25rem;
+    line-height: inherit;
+    white-space: nowrap;
+}
+/* Links inside the navbar */
+.navbar a {
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: black;
+    text-align: center;
+}
+
+.dropdownItem {
+    width: 100%;
+}
+
+/* The dropdown container */
+.dropdownDiv {
+    float: right;
+    overflow: visible;
+}
+
+    /* Dropdown button */
+    .dropdownDiv .dropbtn {
+        width:100%;
+        text-align:center;
+        font-size: 16px;
+        border: none;
+        outline: none;
+        color: white;
+        padding: 14px 16px;
+        background-color: inherit;
+        font-family: inherit; /* Important for vertical align on mobile phones */
+        margin: 0; /* Important for vertical align on mobile phones */
+    }
+
+    /* Add a red background color to navbar links on hover */
+    .navbar a:hover, .navbar .dropdownDiv:hover .dropbtn {
+        background-color: red;
+    }
+
+.navMenu .dropdownDiv .dropbtn:hover {
+    background-color: #595960;
+}
+
+/* Dropdown content (hidden by default) */
+.dropdown-list {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-list a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+}
+
+/* Add a grey background color to dropdown links on hover */
+.dropdown-list a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown menu on hover */
+/*.dropbtn:hover .dropdown-list {
+    display: block;
+}*/
+.navbar .dropdownDiv:hover .dropdown-list {
+    display: block;
+}
+
+.left {
+    position: absolute;
+    left: 0;
+}
+
+.right{
+    position:absolute;
+    right:0;
+}

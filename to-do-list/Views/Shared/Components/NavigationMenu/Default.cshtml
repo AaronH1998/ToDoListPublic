@@ -1,0 +1,85 @@
+﻿@model IEnumerable<string>
+
+<span class="float-right">
+
+    <button id="openNavButton" tabindex="0" role="button" class="btn-collapse-menu mr-1" onclick="openNav()"><i class="fas fa-caret-right"></i></button>
+</span>
+
+<div class="menu-main">
+    <p class="nav-menu-title" style="display:inline;font-size:30px; width:100%;">
+        <div style="position:relative;width:100%">
+
+
+            <div id="projectHeader" tabindex="-2" class="dropdownDiv" style="width:100%;display:none;">
+                <button class="dropbtn"><i class="fa fa-angle-down" aria-hidden="true" style="color:#FFF07C"></i>   @ViewData["ProjectName"]</button>
+                <div class="dropdown-list left">
+                    <a class="dropdownItem" data-toggle="modal" data-target="#editProjectModal" href="#">Edit Project Name</a>
+                </div>
+            </div>
+            <button id="closeNavButton" tabindex="0" role="button" class="btn-collapse-menu mr-1 right" style="top:-20px" onclick="closeNav()"><i class="fas fa-caret-left"></i></button>
+
+        </div>
+    </p>
+    <div style="clear:both;"></div>
+
+    <div id="navCategories">
+        @foreach (string navCategory in Model)
+        {
+            if (navCategory == "Active Projects")
+            {
+                <a class="btn" data-bind="click:changeProjectList.bind($data,false)" href="#">
+                    @navCategory
+                </a>
+            }
+            else if (navCategory == "Closed Projects")
+            {
+                <a class="btn" data-bind="click:changeProjectList.bind($data,true)" href="#">
+                    @navCategory
+                </a>
+            }
+            else
+            {
+                <a class="btn droppable" data-bind="click:changeList.bind($data,'@navCategory')" style="display:block;" href="#">
+                    @navCategory
+                </a>
+            }
+        }
+    </div>
+
+    <div id="projectUsers" class="container mt-5" style="display:none;">
+        <div class="text-center" style="font-size: 22px;color:white">
+            Users in Project:
+        </div>
+
+        <div data-bind="foreach:$data.projectUsers">
+            <div><span data-bind="text:username"></span> <span data-bind="if:tasksVM.projectOwner() == username" class="owner-tag">(Owner)</span></div>
+        </div>
+    </div>
+</div>
+
+<div id="editProjectModal" object="Project" type="Edit" onCompletion="editProjectName"
+     class="react-modal modal fade"
+     tabIndex="-1" role="dialog" aria-labelledby="headerLabel" aria-hidden="true"></div>
+
+<script>
+    $(function () {
+        editProjectName = function (projectName) {
+            $.ajax({
+                url: window.location.origin + '/api/Project/' + tasksVM.projectId() + '?projectName=' + projectName,
+                type: "put",
+                success: function () {
+                    location.reload();
+                }
+            });
+        }
+        if ('@ViewData["ProjectName"]' == '') {
+            $("#projectHeader").css("visibility","hidden");
+        }
+
+        $(".navMenu").on('transitionend webkitTransitionEnd oTransitionEnd', function () {
+            if ($(".navMenu").outerWidth() == 200) {
+                $(".menu-main").css("display", "block");
+            }
+        });
+    });
+</script>

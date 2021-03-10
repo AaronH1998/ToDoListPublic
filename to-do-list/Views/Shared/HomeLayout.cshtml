@@ -1,0 +1,65 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <link asp-href-include="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/main.css?v=1.4" /> @*update version on each publish*@
+
+    <link rel="shortcut icon" href="~/images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="~/images/favicon.ico" type="image/x-icon">
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+        $.widget.bridge('uitooltip', $.ui.tooltip);
+        $.widget.bridge('uibutton', $.ui.button);
+    </script>
+    <script src="~/lib/knockoutjs/3.5.1/Content/Scripts/knockout-3.5.1.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout-validation/1.0.2/knockout.validation.min.js"></script>
+    <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js"></script>
+    <script src="~/lib/tether/dist/js/tether.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="https://kit.fontawesome.com/021fd031ea.js" crossorigin="anonymous"></script>
+    <script src="~/js/main.js?v=1.5"></script> @*update version on each publish*@
+    <script src="~/js/droppableAndSortable.js?v=1.1"></script>
+    <script src="~/lib/toastr/2.1.1/content/scripts/toastr.min.js">
+        toastr.options = {
+            maxOpened: 1,
+            autoDismiss: true
+        }
+    </script>
+    <environment include="Development">
+        <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    </environment>
+    <environment include="Production">
+        <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    </environment>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.7.1/remarkable.min.js"></script>
+    <script src="https://unpkg.com/@("@")babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    @await Component.InvokeAsync("TopNavbar")
+
+    <div class="bodyUnderNavbar">
+        <hr />
+        <breadcrumb></breadcrumb>
+        <hr />
+        <div id="bodyUnderBreadcrumb" class="bodyUnderBreadcrumb row open-menu">
+            <div class="navMenu">
+                @await Component.InvokeAsync("NavigationMenu")
+            </div>
+            <div class="content">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+    <script src="@Url.Content("~/jsx/reactModal.jsx")"></script>
+</body>
+</html>
